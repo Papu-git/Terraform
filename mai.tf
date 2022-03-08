@@ -10,3 +10,27 @@ resource "aws_instance" "Tata-web" {
     Name = "Tata-web"
   }
 }
+//
+pipeline {
+    agent any
+
+    stages {
+        stage('checkout') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/Papu-git/Terraform.git']]])
+            }
+        }
+        stage('Terraform init') {
+            steps {
+                sh ("terraform init")
+            }
+        }
+        stage('Terraform Action') {
+            steps {
+                echo "terraform action from the parameter is ----->${action}"
+                sh ("terraform ${action} --auto-approve");
+            }
+        }
+    }
+}
+
